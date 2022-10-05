@@ -1,15 +1,28 @@
-import './App.css';
-import {Suspense} from 'react'
-import {Route,Routes,Navigate } from 'react-router-dom'
+import './App.scss';
+import { Suspense, lazy } from 'react'
+import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom'
+import NotFound from './components/NotFound';
+import MainPage from './features/Photo/pages/MainPage';
+import AddEditPage from './features/Photo/pages/AddEditPage';
+import Header from './components/Header';
+const Photo = lazy(() => import('./features/Photo'))
 
 function App() {
   return (
     <div className="photo-app">
       <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-            <Navigate exact from='/' to="/photos"/>
-            <Route path='/photos' />
-        </Routes>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route exact path='/' element={<Navigate to='/photos' />}></Route>
+            <Route path='/photos' >
+              <Route path='' element={<MainPage />} />
+              <Route path='add' element={<AddEditPage/>} />
+              <Route path=':photoId' element={<AddEditPage/>} />
+            </Route>
+            <Route path='*' element={<NotFound />}></Route>
+          </Routes>
+        </BrowserRouter>
       </Suspense>
     </div>
   );
